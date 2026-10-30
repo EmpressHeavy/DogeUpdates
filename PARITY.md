@@ -20,7 +20,7 @@
 | X Chat watch and send | `skills/xchat-watch-and-send/SKILL.md` |
 | Routines and exact prompts (same numbering as setup) | `routines/v9-routines.md`, `routines/v9-routine-prompts.md` |
 | Friday feedback digest | **Owner-only, not shipped to clones** |
-| Weekly update check | `routines/weekly-update-check.md` |
+| Automatic weekly updates (mandatory, always on) | `routines/weekly-update-check.md`, `UPGRADE.md` section A, setup skill "Automatic updates", monthly check re-creates it |
 | Monthly settings check | `skills/doge-getting-started/SKILL.md`, `routines/v9-routine-prompts.md` |
 | Safety rules | `docs/safety.md`, `UPGRADE.md` guardrails |
 | Upgrade procedure | `UPGRADE.md` |

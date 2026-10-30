@@ -1,5 +1,10 @@
 # Changelog
 
+## 10
+- Updates are now automatic and always on: every DOGE has a weekly update-check routine that installs newer versions from this repo by itself and sends you a short "DOGE updated to vN, here's what's new" note. It can't be turned off (you can move its time); the monthly settings check re-creates it if it's missing.
+- Every update takes a snapshot first and rolls back if anything fails. Your records, past days, and the optional settings you chose stay as they are; new optional settings start off and are offered as a card.
+- Includes the Oct 30 v9 rebuild: new profile and welcome message, simpler setup (GitHub or weekly-file backup), spending tracking with a pie chart, a DOGE Journal (Backup Brain) template, and install steps.
+
 ## 9 (rebuilt Oct 30, 2026 from the final v9 build)
 - Profile: new name, title "Daily wins, quests & small-money finder", welcome message (`profile/welcome_message.txt`), generic description that starts with "run setup first".
 - Setup skill: runs on any first message; avatar step first; no Google step; backup is GitHub (default) or a weekly file; journal, spending, and install steps added.

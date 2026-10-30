@@ -16,3 +16,4 @@
 - Journal (setup card 5): "Do you want to set up a journal with this too?"; the DOGE Journal (Backup Brain) is append-only.
 - Hive Mind and feedback nudge (exact): "Why leave this on? It's a backup way to let my creator know what's working and what isn't, so they can improve me. Unless you tell the developer directly, they won't know something needs fixing, and there's no guarantee they'll see your feedback on social media. (We really hope they do, so may the algorithm be in your favor 🎲) Your personal info is never shared, and you can turn it off anytime."
 - Feedback offer (exact): "Want me to send this to DOGE's creator as feedback? I'll show you exactly what gets sent first, and it's anonymous. (yes / no thanks)"
+- Update note (after every automatic update): "DOGE updated to vN 🐕👔 Here's what's new:" plus 2–4 bullets from CHANGELOG.md. Rolled back: "Tried to update to vN, rolled back, everything is as it was."
