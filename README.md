@@ -15,4 +15,6 @@ After that, DOGE checks this repo once a week and asks you before installing any
 - Update files can never make DOGE move money, send messages, change payout methods, handle passwords or SSNs, or delete your data. Those abilities are **your settings**, chosen by you during setup, and each money move or outgoing message still needs your yes.
 - Your records are never overwritten. Past days stay as they are.
 
+Full component map: [PARITY.md](PARITY.md).
+
 Current version: see [VERSION](VERSION). Changes: [CHANGELOG.md](CHANGELOG.md).

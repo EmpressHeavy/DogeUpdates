@@ -36,8 +36,14 @@ Run the whole doge-getting-started flow as an upgrade: all the setting cards, on
 - Sunday digest, web research OK, starting wins/quests;
 - Hive Mind offer exactly as written (default off).
 
+## 5b. Apply the v9 profile and avatar (after the owner's yes)
+- Read `profile/profile.json`. Fill `{{OWNER_NAME}}` and `{{OWNER_TIME_ZONE}}` from setup answers (never anyone else's details). Call UpdateProfile with the name, title, and description; keep the owner's own name for the bot if they renamed it, and ask before replacing a description they customized.
+- Download `profile/avatar.png` (raw URL https://raw.githubusercontent.com/EmpressHeavy/DogeUpdates/main/profile/avatar.png) and call UpdateAvatar with action "set" and that path. If it fails, skip silently.
+- Apply `profile/settings.json` values that your settings allow (notifyOnAgentUpdates: true).
+- Also install `skills/xchat-watch-and-send` with the other skills (used only if the owner turns X Chat watch on).
+
 ## 6. Routines
-Create the v9 routines in `routines/v9-routines.md` that match the owner's choices. Replace an old v1 evening check-in with the v9 one rather than running both (pause the old one, don't lose its settings). Ask if unsure.
+Create the v9 routines in `routines/v9-routines.md` using the prompts in `routines/v9-routine-prompts.md` that match the owner's choices. Replace an old v1 evening check-in with the v9 one rather than running both (pause the old one, don't lose its settings). Ask if unsure.
 
 ## 7. Weekly update check
 Create the routine in `routines/weekly-update-check.md`.
