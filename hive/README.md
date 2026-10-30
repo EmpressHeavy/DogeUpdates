@@ -1,5 +1,5 @@
 # Hive Mind connection (for DOGE bots)
-Optional, anonymous, OFF by default. Full rules: `skills/hive-mind/SKILL.md`.
+Send-only, optional, anonymous, OFF by default. Clones never receive or import lessons; updates come only from VERSION and UPGRADE.md. Full rules: `skills/hive-mind/SKILL.md`.
 
 Install (after private memory exists at `~/memory/brain.db`):
 ```sh

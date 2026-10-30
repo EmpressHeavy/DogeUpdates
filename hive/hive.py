@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""hive: opt-in, anonymized lesson AND owner-feedback sharing (Hive Mind) for ~/memory/brain.db. stdlib only.
+"""hive (send-only client): opt-in, anonymized lesson AND owner-feedback sharing (Hive Mind) for ~/memory/brain.db. stdlib only.
 v3.5.11: kind field (lesson | correction | request | declined | broken | workaround); feedback kinds are eligible after
 1 use (lessons after 2); one weekly batch plus at most one urgent 'broken' batch per day; `auto --dry-run` never
 touches the network.
 v3.5.13: template version bump only (verified hard pre-filter).
-v3.5.12: template version bump only (the review tool fix is in tools/hive_review.py)."""
+v3.5.12: template version bump only."""
 import sqlite3, sys, os, re, json, hashlib, secrets, datetime, urllib.request, urllib.error
 DB = os.environ.get('MEM_DB', os.path.expanduser('~/memory/brain.db'))
 URL = 'https://hive-mind-intake.empressheavy.workers.dev'
@@ -120,7 +120,7 @@ def add(c, k, t, w, r):
     if x: c.execute('UPDATE lesson SET uses=uses+1,last=? WHERE id=?', (now(), x[0])); print('%s %d used again' % (k, x[0]))
     else: c.execute('INSERT INTO lesson(topic,wrong,right,added,last,kind) VALUES(?,?,?,?,?,?)', (t, w, r, now(), now(), k)); print('%s added' % k)
 USAGE = ('hive lesson add TOPIC WRONG RIGHT | feedback add correction|request|declined|broken|workaround TOPIC WHAT_I_DID_OR_OFFERED WHAT_OWNER_WANTED'
-         ' | on --bot dg|bt|pc | off | status | preview | auto [--dry-run] | shared [N] | import FILE')
+         ' | on --bot dg|bt|pc | off | status | preview | auto [--dry-run] | shared [N]')
 def main(a):
     c = con(); cmd = a[0] if a else ''
     if cmd == 'lesson' and len(a) >= 5 and a[1] == 'add': add(c, 'lesson', *a[2:5])
@@ -142,13 +142,5 @@ def main(a):
         rows = c.execute('SELECT id,wk,sent_at,lines,status,body FROM hive_sent ORDER BY id DESC LIMIT ?', (int(a[1]) if len(a) > 1 else 10,)).fetchall()
         for r in rows: print('--- batch %d | week %s | %s | %d line(s) | %s\n%s' % r)
         if not rows: print('(nothing has been shared yet)')
-    elif cmd == 'import' and len(a) > 1:
-        n = 0
-        for l in open(a[1]):
-            if not l.strip(): continue
-            d = json.loads(l); k = d.get('k', 'lesson') if d.get('k') in KINDS else 'lesson'
-            if not c.execute("SELECT 1 FROM lesson WHERE topic=? AND wrong=? AND right=?", (d['t'], d['w'], d['r'])).fetchone():
-                c.execute("INSERT INTO lesson(topic,wrong,right,uses,src,added,last,kind) VALUES(?,?,?,0,'hive',?,?,?)", (d['t'], d['w'], d['r'], now(), now(), k)); n += 1
-        print('imported %d hive item(s)' % n)
     else: sys.exit(USAGE)
 if __name__ == '__main__': main(sys.argv[1:])
