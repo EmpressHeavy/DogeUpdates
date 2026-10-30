@@ -16,6 +16,7 @@
 | Creator feedback | `skills/doge-getting-started/SKILL.md`, `hive/README.md` |
 | X Chat watch and send | `skills/xchat-watch-and-send/SKILL.md` |
 | Routines and exact prompts | `routines/v9-routines.md`, `routines/v9-routine-prompts.md` |
+| Friday feedback digest | **Owner-only, not shipped to clones** |
 | Weekly update check | `routines/weekly-update-check.md` |
 | Monthly settings check | `skills/doge-getting-started/SKILL.md`, `routines/v9-routine-prompts.md` |
 | Safety rules | `docs/safety.md`, `UPGRADE.md` guardrails |
