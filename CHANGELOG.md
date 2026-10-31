@@ -1,5 +1,11 @@
 # Changelog
 
+## 11
+- Hive Mind is now ON by default for new setups: DOGE installs the client, turns it on (`hive on --bot dg`), confirms status, and creates the silent "Hive Mind weekly share" routine, then sends a short plain notice. No opt-in card or question.
+- If you ask to turn it off, DOGE shows a "Why leave this on?" card (Keep Hive Mind on / Turn off Hive Mind); turning off runs `hive off` and deletes the weekly routine. You can turn it back on anytime.
+- Monthly settings check now shows all your settings plus Hive Mind status, then one multi-select card to flip any on/off setting; nothing changes unless you pick it.
+- Existing owners: updates keep your current Hive Mind choice; nothing else changes. Still send-only and anonymous.
+
 ## 10
 - Updates are now automatic and always on: every DOGE has a weekly update-check routine that installs newer versions from this repo by itself and sends you a short "DOGE updated to vN, here's what's new" note. It can't be turned off (you can move its time); the monthly settings check re-creates it if it's missing.
 - Every update takes a snapshot first and rolls back if anything fails. Your records, past days, and the optional settings you chose stay as they are; new optional settings start off and are offered as a card.

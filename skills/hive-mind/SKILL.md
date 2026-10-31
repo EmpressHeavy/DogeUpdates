@@ -1,30 +1,36 @@
 ---
 name: hive-mind
-description: Optional, anonymous sharing of this bot's most useful lessons so future versions of the bot get smarter. Use during first-run setup (to install the client and offer it), whenever something failed and a different approach then worked (record the lesson), when the user asks about Hive Mind, sharing lessons, privacy, or what was shared, in the monthly settings check, and in the weekly routine that runs `hive auto`.
+description: On-by-default (for DOGE), anonymous sharing of this bot's most useful lessons so future versions of the bot get smarter. Use during first-run setup (to install the client and turn it on), whenever something failed and a different approach then worked (record the lesson), when the user asks about Hive Mind, sharing lessons, privacy, or what was shared, in the monthly settings check, and in the weekly routine that runs `hive auto`.
 ---
-# Hive Mind (opt-in lesson sharing)
+# Hive Mind (anonymous lesson sharing, on by default)
 
 ## What it is
-Your bot keeps "lessons" (avoid X -> do Y) in its private memory (`~/memory/brain.db`, table `lesson`). With Hive Mind turned on, the bot shares a cleaned-up copy of the lessons it has actually reused (2+ times) with the bot's creator to help improve DOGE. It is OFF by default. Once the user opts in, the bot sends one anonymized batch about once a week automatically (no weekly approval); the user can ask to see what was shared (`hive shared`) or turn it off anytime.
+Your bot keeps "lessons" (avoid X -> do Y) in its private memory (`~/memory/brain.db`, table `lesson`). With Hive Mind turned on, the bot shares a cleaned-up copy of the lessons it has actually reused (2+ times) with the bot's creator to help improve DOGE. For DOGE it is ON by default from setup (the owner gets a plain notice and can turn it off anytime). While it's on, the bot sends one anonymized batch about once a week automatically (no weekly approval); the user can ask to see what was shared (`hive shared`) or turn it off anytime.
 
 ## Setup (once, after private memory exists)
 1. Private memory must already be set up (`~/memory/brain.db` from the private-memory-db skill). If it is missing, set that up first.
 2. If `~/memory/hive.py` is missing, download `https://raw.githubusercontent.com/EmpressHeavy/DogeUpdates/main/hive/hive.py` to `~/memory/hive.py` (no edits), then:
    `chmod +x ~/memory/hive.py && mkdir -p ~/bin && printf '#!/bin/sh\nexec python3 "$HOME/memory/hive.py" "$@"\n' > ~/bin/hive && chmod +x ~/bin/hive`
    Then run `hive status` (this creates the `lesson`, `hive_state` and `hive_sent` tables if missing). Use `~/bin/hive` if `hive` is not on PATH.
-3. Offer it during first-run setup with the "First-run offer" text below. It stays OFF unless the user clearly says yes. Only on a clear yes: `hive on --bot <code>` (DOGE = dg, Bot Terminator = bt, Playlist Converter = pc).
+3. During DOGE's first-run setup, turn it on quietly (no card, button, or question): `hive on --bot dg` (DOGE = dg, Bot Terminator = bt, Playlist Converter = pc), confirm with `hive status`, create the weekly "Hive Mind weekly share" routine running `hive auto` (silent unless it fails), then send the "First-run notice" below.
 4. `hive status` shows on/off, the anonymous id, and the last week sent. `hive off` stops everything at any time.
 
 (The client code is `hive/hive.py` in https://github.com/EmpressHeavy/DogeUpdates. Download it with curl as shown in `hive/README.md`. Don't edit it.)
 
-## First-run offer (say it as a suggestion, default off)
-"One optional suggestion: you can turn on the Hive Mind. It never saves your personal information, only anonymized lessons about what worked and what didn't, so future versions get smarter and more efficient. Once it's on, I send those lessons about once a week on my own; you can ask to see what was shared or switch it off anytime. Want it on? (yes / not now)"
-- Yes: `hive on --bot <code>`, then create a weekly routine that runs `hive auto`. Anything else (no, not now, silence): leave it off and don't ask again until the monthly settings check.
+## First-run notice (DOGE; plain message, no buttons)
+"Just so you are aware, DOGE is equipped with a system called Hive Mind, which gets end-user feedback to my creator so you don't have to reach out via social media and risk your feedback getting missed. Hive Mind does NOT save any of your personal information, only anonymized lessons about what worked and what didn't, so future versions of me can get smarter and work more efficiently. I send those lessons about once a week on my own. :)"
+
+## Turning it off (only if the owner asks)
+Send one choice widget card with exactly this prompt:
+"Why leave this on? It's a backup way to let my creator know what's working and what isn't, so they can improve me. Unless you tell the developer directly, they won't know something needs fixing, and there's no guarantee they'll see your feedback on social media. (We really hope they do, so may the algorithm be in your favor 🎲) Your personal info is never shared, and you can turn it off anytime."
+Buttons: **Keep Hive Mind on** · **Turn off Hive Mind**
+- Keep Hive Mind on: leave it on.
+- Turn off Hive Mind: `hive off`, delete the "Hive Mind weekly share" routine, confirm in one line.
+- Turning it back on later: `hive on --bot dg` and recreate the weekly routine.
 
 ## Monthly settings reminder (add to the monthly settings check)
-- If `hive status` shows enabled=1: "Hive Mind: you're opted IN. It never saves your personal information, only anonymized lessons about what worked and what didn't, so future versions get smarter and more efficient. About once a week I send those lessons on my own; you can ask to see what was shared anytime. Want to keep it on, or switch it off?"
-- If enabled=0: "Hive Mind: you're opted OUT, so nothing is shared. It never saves your personal information, only anonymized lessons about what worked and what didn't, so future versions get smarter and more efficient. Want to switch it on? (yes / keep off)"
-- Act only on a clear answer: `hive on --bot <code>` or `hive off` (and remove the weekly routine). No answer means no change.
+- Show `hive status` with all other settings, plus one line: "Hive Mind: <on/off>. It shares only anonymized lessons about what worked and what didn't, never your personal info, about once a week, so future versions of me improve."
+- Hive Mind appears in the monthly multi-select card of on/off settings with its current state; flip it only if they pick it (`hive on --bot dg` + recreate the weekly routine, or `hive off` + delete it). No "Why leave this on?" nudge in the monthly check. Keep the weekly routine only while it's on.
 
 ## Recording lessons as you work (always, on or off)
 - When something fails and a different approach then works, record it right away: `hive lesson add "topic" "what went wrong" "what worked"`. Keep it short and general (150 characters per part), with no names, emails, links, or account details.
@@ -54,10 +60,10 @@ Command (one report per distinct change; repeating the same report just bumps it
 - You're identified only by a random id, salted and hashed on this computer. No name, email, or account is sent, and the upload needs no sign-in.
 - Each line includes the bot code, topic, the "wrong way" and "right way" (150 characters max each), a rough usage bucket (2-4, 5-9, or 10+ uses), the template version, the anonymous id, a content hash, and the week number.
 
-## Weekly flow (automatic once opted in)
+## Weekly flow (automatic while on)
 1. The weekly routine runs `hive auto`. It sends only if enabled=1, nothing was sent this ISO week, and there are lessons with 2+ uses; otherwise it is a silent no-op. Don't message the user about routine sends.
 2. "What did you share?": run `hive shared` (all past batches and their result, stored locally) and show it unchanged.
-3. "Turn it off": run `hive off` and remove the weekly routine. Takes effect immediately.
+3. "Turn it off": show the "Turning it off" card above; only on **Turn off Hive Mind** run `hive off` and remove the weekly routine. Takes effect immediately.
 4. `hive preview` shows the exact batch that would be sent.
 
 ## Rules

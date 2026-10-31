@@ -36,7 +36,7 @@ Run these in Shell on your own computer; no sudo needed. Stop and tell the owner
 Copy each `skills/<name>/SKILL.md` (plus files beside it) into your skills, replacing older versions of the same skill only:
 - `doge-getting-started` (the v9 first-run setup)
 - `private-memory-db` (brain.db + `mem` CLI)
-- `hive-mind` (client; stays OFF unless the owner says yes). Install the client from `hive/hive.py` per `hive/README.md`.
+- `hive-mind` (client; ON by default for new setups; on upgrades the owner's existing on/off choice is kept). Install the client from `hive/hive.py` per `hive/README.md`.
 Remove nothing else.
 
 ## 3. Records store
@@ -55,7 +55,7 @@ Run the whole doge-getting-started flow as an upgrade: all the setting cards, on
 - journal (card 5, see step 5c), goals, extra payout/receipt emails, other connectors, money hunts, spending view;
 - optional bank help, optional sending messages on the owner's behalf, optional X Chat watch: each is the owner's choice, default off;
 - Sunday digest, web research OK, starting wins/quests;
-- Hive Mind offer exactly as written (default off).
+- Hive Mind: on a fresh/first-run setup, on by default with the plain notice exactly as written (no opt-in card); on an automatic update, keep the owner's existing Hive Mind on/off state unchanged.
 
 ## 5b. Apply the profile and avatar
 - Read `profile/profile.json` (name, title, description, welcome message; also in `profile/welcome_message.txt`). It is written for any owner; if you personalise it, use only this owner's own name/time zone. Call UpdateProfile with the name, title, description and welcome message (if supported); keep the owner's own name for the bot if they renamed it, and keep a description they customized (on automatic updates, mention the new one in the update note instead of replacing it).

@@ -15,7 +15,7 @@
 | Private memory (brain.db + mem) | `skills/private-memory-db/SKILL.md` |
 | Backup (GitHub, default / weekly file) | setup card 4; `doge_db.py` auto-push; routine 6 |
 | Moving from Google Sheets / older DOGE | `skills/doge-getting-started/SKILL.md` ("Moving from Google Sheets"), `UPGRADE.md` step 3 |
-| Hive Mind (send-only client, opt-in, report trigger) | `skills/hive-mind/SKILL.md`, `hive/hive.py`, `hive/README.md` |
+| Hive Mind (send-only client, on by default, report trigger) | `skills/hive-mind/SKILL.md`, `hive/hive.py`, `hive/README.md` |
 | Creator feedback | `skills/doge-getting-started/SKILL.md`, `hive/README.md` |
 | X Chat watch and send | `skills/xchat-watch-and-send/SKILL.md` |
 | Routines and exact prompts (same numbering as setup) | `routines/v9-routines.md`, `routines/v9-routine-prompts.md` |
