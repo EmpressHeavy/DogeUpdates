@@ -7,7 +7,7 @@ You are an installed DOGE bot. You got here one of two ways. Read all of this be
 ## A. Automatic update (v9 or later → newer)
 1. Snapshot (step 1) and back up to the owner's chosen backup.
 2. Re-run steps 1b to 4, 5b, 5c and 6 to 8 for whatever changed in CHANGELOG.md: replace skills, scripts, templates and routine prompts with the new versions, and run `doge_db.py init` (it only adds tables). Don't re-ask setup cards they already answered. Keep their routines' times and their settings exactly as they are.
-3. A **new optional setting** in this version: send one tap-button card offering it, off unless they say yes.
+3. A **new optional setting** in this version: send one tap-button card offering it, off unless they say yes. The tip prompt (v12) is not one of these: it has no on/off card. On an update that includes it, download `records/tip_prompt.py` and `records/qr/*.png` next to `doge_db.py`, install the `tip-prompt` skill, and run `python3 /workspace/records/doge_db.py tip-seed` once so existing logged days count. Do not show the tip card in the update note, and do not run `note-use` on this turn.
 4. If any step fails, restore the snapshot (files, skills, routine prompts; wins.db from the snapshot copy only if it was damaged, then `doge_db.py restore` the backup CSVs, which only adds rows). Tell the owner it was rolled back, and try again next week.
 5. Finish with step 8 (the short "DOGE updated to vN" note).
 
@@ -37,11 +37,13 @@ Copy each `skills/<name>/SKILL.md` (plus files beside it) into your skills, repl
 - `doge-getting-started` (the v9 first-run setup)
 - `private-memory-db` (brain.db + `mem` CLI)
 - `hive-mind` (client; ON by default for new setups; on upgrades the owner's existing on/off choice is kept). Install the client from `hive/hive.py` per `hive/README.md`.
+- `tip-prompt` (occasional tip card; not an on/off setting).
 Remove nothing else.
 
 ## 3. Records store
-- Download `records/doge_db.py`, `records/spending_pie.py` and `records/schema.sql` to `/workspace/records/` (raw base: https://raw.githubusercontent.com/EmpressHeavy/DogeUpdates/main/records/).
+- Download `records/doge_db.py`, `records/spending_pie.py`, `records/tip_prompt.py` and `records/schema.sql` to `/workspace/records/` (raw base: https://raw.githubusercontent.com/EmpressHeavy/DogeUpdates/main/records/). Also download `records/qr/stripe.png`, `cashapp.png`, `venmo.png` and `xmoney.png` into `/workspace/records/qr/`.
 - Run `python3 /workspace/records/doge_db.py init`. It only adds missing tables and records schema_version 9; existing rows are untouched. `restore <dir>` is additive too: it adds missing rows from a CSV backup and never deletes or overwrites.
+- Tip counter (does not back up and does not block other commands): `note-use` counts one use per day after setup, `tip-shown` starts the clock when the card is shown, `tip-later` switches to a 30-day cadence (Maybe later / Remind me monthly, or a dismiss), `tip-setup-done` marks first-run finished without counting it, `tip-seed` adopts existing logged days once on upgrade. There is no opt-out command.
 - Spending (only if the owner turns on "where your money goes"): `add-spend <merchant> <amount> --category X --date D`, `import-spend <statement.csv>` (header date,merchant,category,amount[,account]; duplicates skipped), `spend-summary <start>`; chart with `python3 /workspace/records/spending_pie.py`.
 - Import old data per the "Moving from Google Sheets" / previous-DOGE steps in doge-getting-started: read every tab of the old Daily Wins Sheet, insert into wins.db, check counts match, and leave the Sheet untouched as an archive. Stop writing to the Sheet afterwards.
 

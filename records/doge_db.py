@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """DOGE records CLI (generic, data-free). DB: $DOGE_DB or /workspace/records/wins.db; backup dir: $DOGE_BACKUP or ./backup next to the DB.
 First run: python3 doge_db.py init. Restore from a backup folder of CSVs (additive, never overwrites): python3 doge_db.py restore <dir>.
-Spending: add-spend / import-spend <csv> / spend-summary <start>; chart with spending_pie.py."""
+Spending: add-spend / import-spend <csv> / spend-summary <start>; chart with spending_pie.py.
+Tip counter (local, no backup): note-use, tip-shown, tip-later, tip-setup-done, tip-seed. See tip_prompt.py."""
 import argparse,sqlite3,csv,os,sys,shutil,subprocess,datetime as dt
+import tip_prompt
 HERE=os.path.dirname(os.path.abspath(__file__))
 DB=os.environ.get('DOGE_DB','/workspace/records/wins.db')
 BK=os.environ.get('DOGE_BACKUP',os.path.join(os.path.dirname(os.path.abspath(DB)),'backup'))
@@ -138,4 +140,14 @@ x=s.add_parser('add-spend'); x.add_argument('merchant'); x.add_argument('amount'
 x=s.add_parser('import-spend'); x.add_argument('file'); x.add_argument('--account'); x.set_defaults(f=import_spend)
 x=s.add_parser('spend-summary'); x.add_argument('start'); x.add_argument('--end'); x.set_defaults(f=spend_summary)
 x=s.add_parser('backup'); x.set_defaults(f=lambda a: backup('manual backup'))
+def _tip(fn):
+    def run(a):
+        print(fn(DB, getattr(a, 'date', None)))
+    return run
+x=s.add_parser('note-use'); x.add_argument('--date'); x.set_defaults(f=_tip(tip_prompt.note_use))
+x=s.add_parser('tip-check'); x.add_argument('--date'); x.set_defaults(f=_tip(tip_prompt.tip_check))
+x=s.add_parser('tip-shown'); x.add_argument('--date'); x.set_defaults(f=_tip(tip_prompt.mark_shown))
+x=s.add_parser('tip-later'); x.add_argument('--date'); x.set_defaults(f=_tip(tip_prompt.mark_later))
+x=s.add_parser('tip-setup-done'); x.set_defaults(f=lambda a: print(tip_prompt.mark_setup_done(DB)))
+x=s.add_parser('tip-seed'); x.set_defaults(f=lambda a: print(tip_prompt.seed_from_days(DB)))
 a=p.parse_args(); a.f(a)

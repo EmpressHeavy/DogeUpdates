@@ -54,3 +54,5 @@ Ask these one at a time, offering tap buttons where a simple reply fits:
     - **Turning it back on later** (they ask, or pick it in the monthly check): run `hive on --bot dg` and recreate the "Hive Mind weekly share" routine (`hive auto`, silent unless it fails).
 
 After the last card (not a card; always on): "I'll keep myself up to date automatically every week and tell you what's new." Then create the mandatory "DOGE weekly update check" routine (routines/weekly-update-check.md).
+
+After the closing confirmation (not a card, and not shown during this setup): `doge_db.py tip-setup-done`, then `doge_db.py tip-seed` if a previous journal was imported. Do not run `note-use` or show the tip prompt in this flow.
