@@ -2,7 +2,7 @@
 
 The official update source for **DOGE, the Department of General Efficiency** Grok Bot: daily wins journal, quests and bonus points, a money-recovered tally, private SQLite records, and a private backup.
 
-DOGE is free. After someone has used it for a while (10 logged days, and not during setup), it may occasionally ask if they'd like to tip the creator. They can say maybe later, and then it asks at most about once a month. There's no off switch, and it never gets in the way of the journal, quests, or anything else.
+DOGE is free. After someone has used it for a while (10 logged days, and not during setup), it may occasionally ask if they'd like to tip the creator. "Maybe later" asks again in about a week. "Remind me monthly", or dismissing the card, asks at most about once a month. There's no off switch, and it never gets in the way of the journal, quests, or anything else.
 
 ## Upgrade your DOGE (for owners)
 1. Copy this page's link: `https://github.com/EmpressHeavy/DogeUpdates`

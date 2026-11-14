@@ -37,7 +37,10 @@ def cli(path, *args):
 class EvaluateTests(unittest.TestCase):
     def test_prompt_and_links_are_exact(self):
         self.assertEqual(tip.PROMPT, PROMPT)
-        self.assertEqual(tip.BUTTON, "Maybe later / Remind me monthly")
+        self.assertEqual(tip.BUTTONS, ("Maybe later", "Remind me monthly"))
+        self.assertEqual(tip.BUTTON_LATER, "Maybe later")
+        self.assertEqual(tip.BUTTON_MONTHLY, "Remind me monthly")
+        self.assertNotIn("Don't ask again", tip.BUTTONS)
         self.assertEqual(
             tip.LINKS,
             (
@@ -83,7 +86,7 @@ class EvaluateTests(unittest.TestCase):
         self.assertEqual(reason, "due")
         self.assertEqual(cadence, 7)
 
-    def test_maybe_later_or_dismiss_is_30_days(self):
+    def test_monthly_cadence_is_30_days(self):
         shown = "2026-06-01"
         show, _, cadence = tip.evaluate(20, True, shown, 30, "2026-06-08")
         self.assertFalse(show)
@@ -154,29 +157,56 @@ class StoreTests(unittest.TestCase):
         self.assertEqual(last, "2026-04-01")
         self.assertFalse(os.path.exists(os.path.join(self.tmp.name, "backup")))
 
-    def test_weekly_then_dismiss_switches_to_monthly(self):
+    def test_maybe_later_keeps_the_weekly_cadence(self):
         tip.mark_setup_done(self.db)
         for i in range(1, 11):
             tip.note_use(self.db, f"2026-05-{i:02d}")
         tip.mark_shown(self.db, "2026-05-10")
         self.assertIn("show=no", tip.tip_check(self.db, "2026-05-16"))
         self.assertIn("show=yes", tip.tip_check(self.db, "2026-05-17"))
-        self.assertIn("reason=due", tip.tip_check(self.db, "2026-05-17"))
         later = tip.mark_later(self.db, "2026-05-17")
-        self.assertIn("cadence=30", later)
+        self.assertIn("cadence=7", later)
         self.assertIn("show=no", later)
-        self.assertIn("show=no", tip.tip_check(self.db, "2026-06-15"))
-        monthly = tip.tip_check(self.db, "2026-06-16")
-        self.assertIn("show=yes", monthly)
+        self.assertIn("show=no", tip.tip_check(self.db, "2026-05-23"))
+        again = tip.tip_check(self.db, "2026-05-24")
+        self.assertIn("show=yes", again)
+        self.assertIn("cadence=7", again)
+        self.assertIn("reason=due", again)
+
+    def test_remind_monthly_and_dismiss_switch_to_30_days(self):
+        tip.mark_setup_done(self.db)
+        for i in range(1, 11):
+            tip.note_use(self.db, f"2026-05-{i:02d}")
+        monthly = tip.mark_monthly(self.db, "2026-05-10")
         self.assertIn("cadence=30", monthly)
-        self.assertIn("reason=due", monthly)
+        self.assertIn("show=no", monthly)
+        self.assertIn("show=no", tip.tip_check(self.db, "2026-06-08"))
+        due = tip.tip_check(self.db, "2026-06-09")
+        self.assertIn("show=yes", due)
+        self.assertIn("cadence=30", due)
+        self.assertIn("reason=due", due)
+        # Maybe later from a monthly cadence returns to next week, not another 30 days.
+        back = tip.mark_later(self.db, "2026-06-09")
+        self.assertIn("cadence=7", back)
+        self.assertIn("show=no", tip.tip_check(self.db, "2026-06-15"))
+        self.assertIn("show=yes", tip.tip_check(self.db, "2026-06-16"))
+        # A separate journal: dismissing without a button is the monthly cadence.
+        other = self.db + ".dismiss"
+        init_db(other)
+        tip.mark_setup_done(other)
+        for i in range(1, 11):
+            tip.note_use(other, f"2026-05-{i:02d}")
+        dismissed = tip.mark_monthly(other, "2026-05-10")
+        self.assertIn("cadence=30", dismissed)
+        self.assertIn("show=no", tip.tip_check(other, "2026-05-17"))
+        self.assertIn("show=yes", tip.tip_check(other, "2026-06-09"))
 
     def test_dismiss_has_no_off_switch(self):
         tip.mark_setup_done(self.db)
         for i in range(1, 11):
             tip.note_use(self.db, f"2026-08-{i:02d}")
         for _ in range(5):
-            line = tip.mark_later(self.db, "2026-08-10")
+            line = tip.mark_monthly(self.db, "2026-08-10")
             self.assertIn("cadence=30", line)
             self.assertNotIn("cadence=0", line)
         self.assertIn("show=no", tip.tip_check(self.db, "2026-09-08"))
@@ -201,7 +231,7 @@ class StoreTests(unittest.TestCase):
         nxt = tip.note_use(self.db, "2026-02-01")
         self.assertIn("uses=13", nxt)
         self.assertIn("show=yes", nxt)
-        tip.mark_later(self.db, "2026-02-01")
+        tip.mark_monthly(self.db, "2026-02-01")
         add_days(self.db, ["2026-02-02"])
         kept = tip.seed_from_days(self.db)
         self.assertIn("reason=kept", kept)
@@ -224,6 +254,7 @@ class StoreTests(unittest.TestCase):
         self.assertIn("show=no", tip.note_use(missing, "2026-01-01"))
         self.assertIn("reason=bad-date", tip.note_use(self.db, "tomorrow"))
         self.assertIn("reason=bad-date", tip.mark_later(self.db, "nope"))
+        self.assertIn("reason=bad-date", tip.mark_monthly(self.db, "nope"))
 
     def test_note_use_stays_fast(self):
         tip.mark_setup_done(self.db)
@@ -250,7 +281,19 @@ class StoreTests(unittest.TestCase):
         self.assertIn("show=no", out)
         code, out, err = cli(self.db, "tip-later", "--date", "2026-04-11")
         self.assertEqual(code, 0, err)
+        self.assertIn("cadence=7", out)
+        self.assertIn("show=no", out)
+        code, out, err = cli(self.db, "tip-check", "--date", "2026-04-18")
+        self.assertEqual(code, 0, err)
+        self.assertIn("show=yes", out)
+        self.assertIn("cadence=7", out)
+        code, out, err = cli(self.db, "tip-monthly", "--date", "2026-04-18")
+        self.assertEqual(code, 0, err)
         self.assertIn("cadence=30", out)
+        code, out, err = cli(self.db, "tip-dismiss", "--date", "2026-04-18")
+        self.assertEqual(code, 0, err)
+        self.assertIn("cadence=30", out)
+        self.assertNotIn("opt", out)
 
 
 if __name__ == "__main__":

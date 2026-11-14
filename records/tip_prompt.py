@@ -3,8 +3,9 @@
 
 A use is one calendar day the owner actually interacts after first-run setup.
 The card shows the first time the counter reaches 10, then at most once every
-7 days. "Maybe later" / "Remind me monthly", or dismissing the card, switches
-that to at most once every 30 days. There is no permanent opt-out.
+7 days. "Maybe later" keeps that 7-day cadence (shows again next week).
+"Remind me monthly", or dismissing the card without picking a button, switches
+to at most once every 30 days. There is no "Don't ask again" and no permanent opt-out.
 
 This never backs up, never touches the network, and never raises on a missing
 database: callers get show=no and keep going. Tips are optional; DOGE stays free.
@@ -20,7 +21,9 @@ CADENCE_DAYS = 7
 LATER_CADENCE_DAYS = 30
 
 PROMPT = "Wow you seem to be using DOGE a lot lately! Would you mind sending my creator a tip? 🪙"
-BUTTON = "Maybe later / Remind me monthly"
+BUTTON_LATER = "Maybe later"
+BUTTON_MONTHLY = "Remind me monthly"
+BUTTONS = (BUTTON_LATER, BUTTON_MONTHLY)
 
 # Public tip links only. The card shows the Stripe QR plus all four as links.
 LINKS = (
@@ -215,8 +218,8 @@ def mark_shown(db_path=None, day=None):
     return _closed(db_path, mutate)
 
 
-def mark_later(db_path=None, day=None):
-    """Maybe later, remind me monthly, or a dismiss. Cadence becomes 30 days. No opt-out."""
+def _choose(db_path, day, cadence_days):
+    """Record a card response. Sets last_shown to today and the cadence. No opt-out."""
     db_path = db_path or default_db()
     try:
         today = _today(day)
@@ -228,12 +231,22 @@ def mark_later(db_path=None, day=None):
         uses, setup, _last_use, _last_shown, _cadence = _read(c)
         if not setup:
             return _line(uses, False, False, CADENCE_DAYS, "setup")
-        _put(c, K_CADENCE, LATER_CADENCE_DAYS)
+        _put(c, K_CADENCE, cadence_days)
         _put(c, K_LAST_SHOWN, today)
-        show, reason, cadence = evaluate(uses, True, today, LATER_CADENCE_DAYS, today)
+        show, reason, cadence = evaluate(uses, True, today, cadence_days, today)
         return _line(uses, True, show, cadence, reason)
 
     return _closed(db_path, mutate)
+
+
+def mark_later(db_path=None, day=None):
+    """Maybe later. Keeps the 7-day cadence so the card can show again next week."""
+    return _choose(db_path, day, CADENCE_DAYS)
+
+
+def mark_monthly(db_path=None, day=None):
+    """Remind me monthly, or a dismiss with no button picked. Cadence becomes 30 days."""
+    return _choose(db_path, day, LATER_CADENCE_DAYS)
 
 
 def mark_setup_done(db_path=None):

@@ -8,4 +8,4 @@ create table spending_categories(category text, amount real, pct_of_total text);
 create table spending_transactions(date text, merchant text, category text, amount real, account text);
 create table meta(key text primary key, value text);
 -- Tip prompt (v12) uses meta only, no new table: tip_use_count, tip_setup_complete,
--- tip_last_use_date, tip_last_shown, tip_cadence_days (7, or 30 after "maybe later" / dismiss).
+-- tip_last_use_date, tip_last_shown, tip_cadence_days (7, including after "Maybe later"; 30 after "Remind me monthly" or a dismiss).

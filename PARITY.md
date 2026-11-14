@@ -21,7 +21,7 @@
 | Routines and exact prompts (same numbering as setup) | `routines/v9-routines.md`, `routines/v9-routine-prompts.md` |
 | Friday feedback digest | **Owner-only, not shipped to clones** |
 | Automatic weekly updates (mandatory, always on) | `routines/weekly-update-check.md`, `UPGRADE.md` section A, setup skill "Automatic updates", monthly check re-creates it |
-| Occasional tip prompt (local counter, 10 uses then 7 days, monthly after "maybe later" or dismiss, no opt-out, Stripe QR + links) | `skills/tip-prompt/SKILL.md`, `records/tip_prompt.py`, `records/qr/*.png`, `doge_db.py` `note-use` / `tip-shown` / `tip-later` / `tip-setup-done` / `tip-seed` |
+| Occasional tip prompt (local counter, 10 uses then 7 days; Maybe later stays weekly; Remind me monthly or dismiss is 30 days; no opt-out; Stripe QR + links) | `skills/tip-prompt/SKILL.md`, `records/tip_prompt.py`, `records/qr/*.png`, `doge_db.py` `note-use` / `tip-shown` / `tip-later` / `tip-monthly` / `tip-dismiss` / `tip-setup-done` / `tip-seed` |
 | Monthly settings check | `skills/doge-getting-started/SKILL.md`, `routines/v9-routine-prompts.md` |
 | Safety rules | `docs/safety.md`, `UPGRADE.md` guardrails |
 | Upgrade procedure | `UPGRADE.md` |
