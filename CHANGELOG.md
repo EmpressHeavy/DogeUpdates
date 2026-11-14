@@ -1,5 +1,9 @@
 # Changelog
 
+## 12
+- Occasional tip prompt. After 10 days of real use (never during first-run setup), DOGE may ask once, then at most every 7 days: "Wow you seem to be using DOGE a lot lately! Would you mind sending my creator a tip? 🪙" The card shows a Stripe QR plus links for Stripe, Cash App, Venmo, and X Money (@HeavyMetalShip). Two buttons: "Maybe later" keeps the 7-day cadence (asks again next week); "Remind me monthly" switches to at most every 30 days. Dismissing the card without picking a button is the monthly cadence. No "don't ask again" and no off switch. DOGE stays free; the ask never blocks or slows anything.
+- The counter is local (wins.db). Existing logged days count on update (`tip-seed`). The weekly automatic update check is unchanged and does not show this card.
+
 ## 11
 - Hive Mind is now ON by default for new setups: DOGE installs the client, turns it on (`hive on --bot dg`), confirms status, and creates the silent "Hive Mind weekly share" routine, then sends a short plain notice. No opt-in card or question.
 - If you ask to turn it off, DOGE shows a "Why leave this on?" card (Keep Hive Mind on / Turn off Hive Mind); turning off runs `hive off` and deletes the weekly routine. You can turn it back on anytime.
